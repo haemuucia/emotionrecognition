@@ -13,6 +13,7 @@ class_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise
 # Open webcam
 cap = cv2.VideoCapture(0)
 
+#Process video bos
 while True:
     ret, frame = cap.read()
     if not ret:
@@ -34,14 +35,14 @@ while True:
             roi = np.expand_dims(roi, axis=-1)  # Add grayscale channel
             roi = np.expand_dims(roi, axis=0)  # Add batch dimension
 
-            # Ensure the model's prediction is valid
+            # Handle model output
             preds = classifier.predict(roi)
             if preds.shape[1] != len(class_labels):
                 print("Warning: Model prediction shape mismatch with class labels!")
                 continue
 
             # Get highest probability emotion
-            confidence = np.max(preds) * 100  # Confidence percentage
+            confidence = np.max(preds) * 100  
             label = f"{class_labels[np.argmax(preds)]}: {confidence:.2f}%"
             cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
         else:
